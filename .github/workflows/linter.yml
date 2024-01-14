@@ -1,0 +1,24 @@
+name: Lint code
+
+on:
+  push:
+    branches: [main]  # Run the workflow on pushes to the main branch
+  pull_request:
+    branches: [main]  # Also run on pull requests targeting the main branch
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu environment
+
+    steps:
+      - uses: actions/checkout@v3  # Checkout the repository code
+      - uses: actions/setup-node@v3  # Set up Node.js environment
+        with:
+          node-version: 16  # Specify the Node.js version
+
+      - run: npm ci  # Install dependencies
+      - run: npm run lint  # Execute the linting command
+
+      - name: Check for lint errors
+        if: failure()  # Only run if the linting step failed
+        run: echo "Linting failed, check the errors above!"
